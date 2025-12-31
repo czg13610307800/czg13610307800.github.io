@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>少年智力测试</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', 'PingFang SC', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            padding: 20px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 2rem;
+            text-shadow: 2px 2px 0 #ffd166;
+            line-height: 1.3;
+        }
+        
+        h2 {
+            color: #06d6a0;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
+        .login-section, .exam-section, .result-section {
+            display: none;
+        }
+        
+        .active-section {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .welcome-message {
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            color: #118ab2;
+            padding: 12px;
+            background-color: #cbf3f0;
+            border-radius: 12px;
+            line-height: 1.5;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #073b4c;
+            font-size: 1.1rem;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #ffd166;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: border-color 0.3s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #06d6a0;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            touch-action: manipulation;
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:active {
+            background-color: #ff5252;
+            transform: translateY(2px);
+        }
+        
+        .btn-secondary {
+            background-color: #118ab2;
+        }
+        
+        .btn-secondary:active {
+            background-color: #0a6c8f;
+        }
+        
+        .btn-success {
+            background-color: #06d6a0;
+        }
+        
+        .btn-success:active {
+            background-color: #05c490;
+        }
+        
+        .question-card {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+            border-left: 6px solid #06d6a0;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .question-number {
+            display: inline-block;
+            background-color: #ffd166;
+            color: #073b4c;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            border-radius: 50%;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .question-text {
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            color: #073b4c;
+            line-height: 1.4;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        
+        .option {
+            padding: 14px;
+            background-color: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            min-height: 60px;
+            touch-action: manipulation;
+        }
+        
+        .option:active {
+            border-color: #118ab2;
+            background-color: #e7f5ff;
+        }
+        
+        .option.selected {
+            border-color: #06d6a0;
+            background-color: #d4f4e1;
+        }
+        
+        .option-letter {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            background-color: #118ab2;
+            color: white;
+            border-radius: 50%;
+            margin-right: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .result-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: conic-gradient(#06d6a0 0% 80%, #ffd166 80% 90%, #ff6b6b 90% 100%);
+            margin: 0 auto 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #073b4c;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .score-text {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #118ab2;
+        }
+        
+        .intelligence-title {
+            font-size: 1.8rem;
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #ffd166;
+            line-height: 1.3;
+            padding: 0 10px;
+        }
+        
+        .history-section {
+            margin-top: 30px;
+            padding: 16px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .history-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        /* 自定义滚动条样式 - 适配移动端 */
+        .history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .history-list::-webkit-scrollbar-track {
+            background: #e9ecef;
+            border-radius: 10px;
+        }
+        
+        .history-list::-webkit-scrollbar-thumb {
+            background: #118ab2;
+            border-radius: 10px;
+        }
+        
+        .history-list::-webkit-scrollbar-thumb:hover {
+            background: #0a6c8f;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background-color: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 5px solid #118ab2;
+            align-items: center;
+        }
+        
+        .history-name {
+            font-weight: bold;
+            color: #073b4c;
+            font-size: 1rem;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 10px;
+        }
+        
+        .history-score {
+            font-weight: bold;
+            color: #06d6a0;
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+        
+        .history-date {
+            color: #6c757d;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        
+        .history-title-text {
+            color: #118ab2;
+            font-size: 1.2rem;
+        }
+        
+        .no-history {
+            text-align: center;
+            color: #6c757d;
+            padding: 20px;
+            font-style: italic;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #6c757d;
+            font-size: 0.85rem;
+            padding: 0 10px;
+        }
+        
+        .instructions {
+            background-color: #ffd166;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            color: #073b4c;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #06d6a0;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        /* 移动端特定优化 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 12px;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+            }
+            
+            .btn {
+                padding: 14px;
+                font-size: 1.1rem;
+                min-height: 52px;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+            
+            .score-circle {
+                width: 140px;
+                height: 140px;
+                font-size: 2.2rem;
+            }
+            
+            .intelligence-title {
+                font-size: 1.6rem;
+            }
+            
+            .history-list {
+                max-height: 250px;
+            }
+            
+            .history-item {
+                padding: 10px;
+                flex-wrap: wrap;
+            }
+            
+            .history-name {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .history-score, .history-date {
+                font-size: 0.95rem;
+            }
+            
+            .option {
+                min-height: 56px;
+                padding: 12px;
+            }
+            
+            .option-letter {
+                width: 26px;
+                height: 26px;
+                line-height: 26px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* 防止微信浏览器字体放大 */
+        body {
+            -webkit-text-size-adjust: 100% !important;
+            text-size-adjust: 100% !important;
+        }
+        
+        /* 防止长按出现默认菜单 */
+        .btn, .option {
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-brain"></i> 少年智力测试 <i class="fas fa-lightbulb"></i></h1>
+        
+        <!-- 登录部分 -->
+        <div id="loginSection" class="login-section active-section">
+            <div class="welcome-message">
+                <p>欢迎来到智力测试！这里有好玩的题目等着你，测试你的聪明程度！</p>
+                <p><strong>适合年龄：8-10岁</strong></p>
+            </div>
+            
+            <div class="form-group">
+                <label for="userName"><i class="fas fa-user"></i> 请输入你的名字：</label>
+                <input type="text" id="userName" placeholder="例如：小明" maxlength="20">
+            </div>
+            
+            <div class="instructions">
+                <p><strong>测试说明：</strong></p>
+                <p>1. 测试共10道选择题，每道题10分，满分100分</p>
+                <p>2. 提交后你会得到一个分数和对应的智力称号</p>
+                <p>3. 你的成绩会被记录下来，可以查看历史成绩</p>
+            </div>
+            
+            <button id="startBtn" class="btn">开始测试 <i class="fas fa-play"></i></button>
+            
+            <!-- 历史成绩部分 -->
+            <div class="history-section">
+                <div class="history-title">
+                    <i class="fas fa-history"></i>
+                    <h3 class="history-title-text">历史成绩记录</h3>
+                </div>
+                <div id="historyList" class="history-list">
+                    <!-- 历史成绩会在这里显示 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 考试部分 -->
+        <div id="examSection" class="exam-section">
+            <div class="welcome-message">
+                你好，<span id="currentUser"></span>！加油哦，认真答题，展现你的智慧！
+            </div>
+            
+            <div class="progress-bar">
+                <div id="progress" class="progress"></div>
+            </div>
+            
+            <div id="questionsContainer">
+                <!-- 题目会动态加载到这里 -->
+            </div>
+            
+            <button id="submitBtn" class="btn btn-success">提交答案 <i class="fas fa-check-circle"></i></button>
+            <button id="backToLoginBtn" class="btn btn-secondary">返回登录页面</button>
+        </div>
+        
+        <!-- 结果部分 -->
+        <div id="resultSection" class="result-section">
+            <div class="result-container">
+                <h2>测试完成！</h2>
+                <div class="score-circle">
+                    <div id="scoreDisplay">0</div>
+                </div>
+                <div class="score-text">你的得分是：<span id="scoreValue">0</span>/100</div>
+                <div id="intelligenceTitle" class="intelligence-title">小试牛刀</div>
+                <p id="resultDescription" style="margin-bottom: 25px; font-size: 1.05rem; color: #073b4c; line-height: 1.5; padding: 0 10px;"></p>
+                
+                <button id="restartBtn" class="btn">重新测试 <i class="fas fa-redo"></i></button>
+                <button id="viewHistoryBtn" class="btn btn-secondary">查看历史成绩</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2023 少年智力测试 | 设计适合8-10岁儿童的智力评估</p>
+        </div>
+    </div>
+
+    <script>
+        // 等待DOM完全加载后再执行初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 当前用户
+            let currentUser = "";
+            
+            // 智力测试题目
+            const questions = [
+                {
+                    question: "如果今天是星期三，那么后天是星期几？",
+                    options: ["星期四", "星期五", "星期六", "星期日"],
+                    correct: 1 // 星期五
+                },
+                {
+                    question: "下列哪个数字与其他不同？",
+                    options: ["2", "3", "9", "12"],
+                    correct: 2 // 9 (因为其他都是2的倍数)
+                },
+                {
+                    question: "如果1个苹果等于2个橘子，1个橘子等于3个葡萄，那么1个苹果等于几个葡萄？",
+                    options: ["3", "5", "6", "8"],
+                    correct: 2 // 6
+                },
+                {
+                    question: "下列哪个图形与其他不同？",
+                    options: ["正方形", "三角形", "圆形", "长方形"],
+                    correct: 2 // 圆形 (因为其他都有角)
+                },
+                {
+                    question: "小明有5个糖果，他给了小红2个，又给了小刚1个，他自己还剩几个？",
+                    options: ["1", "2", "3", "4"],
+                    correct: 1 // 2
+                },
+                {
+                    question: "找规律：2, 4, 6, 8, ?",
+                    options: ["9", "10", "12", "14"],
+                    correct: 1 // 10
+                },
+                {
+                    question: "下列哪项不是水果？",
+                    options: ["苹果", "香蕉", "胡萝卜", "葡萄"],
+                    correct: 2 // 胡萝卜
+                },
+                {
+                    question: "如果一个盒子里有3个红球和2个蓝球，随机拿出一个，最可能拿到什么颜色的球？",
+                    options: ["红球", "蓝球", "绿球", "可能性一样"],
+                    correct: 0 // 红球
+                },
+                {
+                    question: "下列哪个词与\"学校\"最相关？",
+                    options: ["医院", "教室", "超市", "公园"],
+                    correct: 1 // 教室
+                },
+                {
+                    question: "如果所有猫都会爬树，Tom是一只猫，那么Tom会爬树吗？",
+                    options: ["会", "不会", "可能不会", "不知道"],
+                    correct: 0 // 会
+                }
+            ];
+            
+            // 智力称号和描述
+            const intelligenceLevels = [
+                { minScore: 0, maxScore: 60, title: "小试牛刀", description: "你刚刚开始探索智力世界，还有很大的进步空间哦！" },
+                { minScore: 61, maxScore: 70, title: "潜力新星", description: "你已经展现出了一定的思考能力，继续努力会更棒！" },
+                { minScore: 71, maxScore: 80, title: "聪明小达人", description: "你的智力水平不错，逻辑思维和观察力都很好！" },
+                { minScore: 81, maxScore: 90, title: "智慧小天才", description: "哇！你的表现非常出色，思维敏捷，分析能力强！" },
+                { minScore: 91, maxScore: 100, title: "超级大脑", description: "太厉害了！你简直是个小天才，思维非常敏锐！" }
+            ];
+            
+            // 用户答案存储
+            let userAnswers = new Array(questions.length).fill(null);
+            
+            // DOM元素
+            const loginSection = document.getElementById('loginSection');
+            const examSection = document.getElementById('examSection');
+            const resultSection = document.getElementById('resultSection');
+            const userNameInput = document.getElementById('userName');
+            const startBtn = document.getElementById('startBtn');
+            const currentUserSpan = document.getElementById('currentUser');
+            const questionsContainer = document.getElementById('questionsContainer');
+            const submitBtn = document.getElementById('submitBtn');
+            const backToLoginBtn = document.getElementById('backToLoginBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const viewHistoryBtn = document.getElementById('viewHistoryBtn');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const scoreValue = document.getElementById('scoreValue');
+            const intelligenceTitle = document.getElementById('intelligenceTitle');
+            const resultDescription = document.getElementById('resultDescription');
+            const historyList = document.getElementById('historyList');
+            const progressBar = document.getElementById('progress');
+            
+            // 初始化 - 显示历史记录
+            displayHistory();
+            
+            // 开始测试按钮点击事件
+            startBtn.addEventListener('click', function() {
+                const userName = userNameInput.value.trim();
+                if (!userName) {
+                    alert("请输入你的名字！");
+                    userNameInput.focus();
+                    return;
+                }
+                
+                currentUser = userName;
+                currentUserSpan.textContent = currentUser;
+                
+                // 切换到考试界面
+                loginSection.classList.remove('active-section');
+                examSection.classList.add('active-section');
+                
+                // 加载题目
+                loadQuestions();
+                
+                // 更新进度条
+                updateProgressBar();
+            });
+            
+            // 返回登录页面
+            backToLoginBtn.addEventListener('click', function() {
+                examSection.classList.remove('active-section');
+                loginSection.classList.add('active-section');
+                displayHistory();
+            });
+            
+            // 重新测试
+            restartBtn.addEventListener('click', function() {
+                // 重置答案
+                userAnswers = new Array(questions.length).fill(null);
+                
+                // 切换到考试界面
+                resultSection.classList.remove('active-section');
+                examSection.classList.add('active-section');
+                
+                // 重新加载题目
+                loadQuestions();
+                
+                // 更新进度条
+                updateProgressBar();
+            });
+            
+            // 查看历史成绩
+            viewHistoryBtn.addEventListener('click', function() {
+                resultSection.classList.remove('active-section');
+                loginSection.classList.add('active-section');
+                displayHistory();
+            });
+            
+            // 加载题目
+            function loadQuestions() {
+                questionsContainer.innerHTML = '';
+                
+                questions.forEach((q, index) => {
+                    const questionCard = document.createElement('div');
+                    questionCard.className = 'question-card';
+                    
+                    const questionNumber = document.createElement('div');
+                    questionNumber.className = 'question-number';
+                    questionNumber.textContent = index + 1;
+                    
+                    const questionText = document.createElement('div');
+                    questionText.className = 'question-text';
+                    questionText.textContent = q.question;
+                    
+                    const optionsDiv = document.createElement('div');
+                    optionsDiv.className = 'options';
+                    
+                    q.options.forEach((option, optionIndex) => {
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'option';
+                        if (userAnswers[index] === optionIndex) {
+                            optionDiv.classList.add('selected');
+                        }
+                        
+                        optionDiv.innerHTML = `
+                            <div class="option-letter">${String.fromCharCode(65 + optionIndex)}</div>
+                            <div class="option-text">${option}</div>
+                        `;
+                        
+                        optionDiv.addEventListener('click', function() {
+                            // 清除同一问题其他选项的选中状态
+                            const options = optionsDiv.querySelectorAll('.option');
+                            options.forEach(opt => opt.classList.remove('selected'));
+                            
+                            // 选中当前选项
+                            optionDiv.classList.add('selected');
+                            
+                            // 保存答案
+                            userAnswers[index] = optionIndex;
+                            
+                            // 更新进度条
+                            updateProgressBar();
+                        });
+                        
+                        optionsDiv.appendChild(optionDiv);
+                    });
+                    
+                    questionCard.appendChild(questionNumber);
+                    questionCard.appendChild(questionText);
+                    questionCard.appendChild(optionsDiv);
+                    
+                    questionsContainer.appendChild(questionCard);
+                });
+            }
+            
+            // 更新进度条
+            function updateProgressBar() {
+                const answeredCount = userAnswers.filter(answer => answer !== null).length;
+                const progressPercent = (answeredCount / questions.length) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+            }
+            
+            // 提交答案
+            submitBtn.addEventListener('click', function() {
+                // 检查是否所有题目都已作答
+                const unanswered = userAnswers.some(answer => answer === null);
+                if (unanswered) {
+                    if (!confirm("你还有题目没有回答，确定要提交吗？")) {
+                        return;
+                    }
+                }
+                
+                // 计算分数
+                let score = 0;
+                userAnswers.forEach((answer, index) => {
+                    if (answer === questions[index].correct) {
+                        score += 10;
+                    }
+                });
+                
+                // 保存成绩
+                saveScore(currentUser, score);
+                
+                // 显示结果
+                showResult(score);
+            });
+            
+            // 显示结果
+            function showResult(score) {
+                // 切换到结果界面
+                examSection.classList.remove('active-section');
+                resultSection.classList.add('active-section');
+                
+                // 显示分数
+                scoreDisplay.textContent = score;
+                scoreValue.textContent = score;
+                
+                // 查找对应的智力称号
+                let level = intelligenceLevels[0];
+                for (const lvl of intelligenceLevels) {
+                    if (score >= lvl.minScore && score <= lvl.maxScore) {
+                        level = lvl;
+                        break;
+                    }
+                }
+                
+                // 显示称号和描述
+                intelligenceTitle.textContent = level.title;
+                resultDescription.textContent = level.description;
+            }
+            
+            // 保存成绩到localStorage
+            function saveScore(userName, score) {
+                // 从localStorage获取历史记录
+                let history = JSON.parse(localStorage.getItem('intelligenceTestHistory')) || {};
+                
+                // 保存或更新当前用户的成绩
+                const now = new Date();
+                const dateStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+                
+                history[userName] = {
+                    score: score,
+                    date: dateStr
+                };
+                
+                // 保存回localStorage
+                localStorage.setItem('intelligenceTestHistory', JSON.stringify(history));
+            }
+            
+            // 显示历史记录
+            function displayHistory() {
+                // 从localStorage获取历史记录
+                let history = JSON.parse(localStorage.getItem('intelligenceTestHistory')) || {};
+                
+                // 清空历史列表
+                historyList.innerHTML = '';
+                
+                // 如果没有历史记录
+                if (Object.keys(history).length === 0) {
+                    const noHistoryDiv = document.createElement('div');
+                    noHistoryDiv.className = 'no-history';
+                    noHistoryDiv.textContent = '暂无历史成绩记录，快来成为第一个测试者吧！';
+                    historyList.appendChild(noHistoryDiv);
+                    return;
+                }
+                
+                // 转换历史记录为数组并排序（按分数从高到低）
+                const historyArray = Object.entries(history).map(([name, data]) => ({
+                    name,
+                    score: data.score,
+                    date: data.date
+                }));
+                
+                historyArray.sort((a, b) => b.score - a.score);
+                
+                // 显示历史记录
+                historyArray.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'history-name';
+                    nameSpan.textContent = item.name;
+                    
+                    const scoreSpan = document.createElement('span');
+                    scoreSpan.className = 'history-score';
+                    scoreSpan.textContent = `${item.score}分`;
+                    
+                    const dateSpan = document.createElement('span');
+                    dateSpan.className = 'history-date';
+                    dateSpan.textContent = item.date;
+                    
+                    historyItem.appendChild(nameSpan);
+                    historyItem.appendChild(scoreSpan);
+                    historyItem.appendChild(dateSpan);
+                    
+                    historyList.appendChild(historyItem);
+                });
+            }
+            
+            // 添加键盘事件支持：按Enter键可以直接开始测试
+            userNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    startBtn.click();
+                }
+            });
+            
+            // 移动端优化：防止双击缩放
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                const now = Date.now();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+            
+            console.log("智力测试网页已加载完成！");
+        });
+    </script>
+</body>
+</html>
