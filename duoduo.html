@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>少儿编程入学评估测试</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --text-secondary: #555555;
+            --border: #e5e5e5;
+            --accent: #2c2c2c;
+            --accent-light: #f5f5f5;
+            --danger: #c0392b;
+            --warning: #e67e22;
+            --success: #27ae60;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --radius: 8px;
+            --radius-lg: 12px;
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'Monaco', 'Menlo', monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            --transition: 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: #fafafa;
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+        }
+
+        /* ============ 入口页 ============ */
+        .entry-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+            background: #fafafa;
+        }
+        .entry-card {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 48px 40px 40px;
+            max-width: 460px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .entry-card .logo-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 20px;
+            background: #EDF3FE;
+            /* 原 #1A1A1A 替换 */
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            /* 文字颜色加深以保持可读 */
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        .entry-card h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+            color: #333;
+            /* 原 #1A1A1A 文字改为深灰 */
+        }
+        .entry-card .subtitle {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 28px;
+            letter-spacing: 0.2px;
+        }
+        .entry-card label {
+            display: block;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 6px;
+            letter-spacing: 0.2px;
+        }
+        .entry-card input[type="text"] {
+            width: 100%;
+            padding: 13px 16px;
+            font-size: 15px;
+            border: 1.5px solid #ddd;
+            border-radius: var(--radius);
+            outline: none;
+            transition: var(--transition);
+            font-family: var(--font-sans);
+            background: #fafafa;
+            letter-spacing: 0.3px;
+        }
+        .entry-card input[type="text"]:focus {
+            border-color: #8faedc;
+            /* 焦点边框改为浅蓝调 */
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(237, 243, 254, 0.6);
+        }
+        .entry-card .btn-enter {
+            display: inline-block;
+            width: 100%;
+            margin-top: 22px;
+            padding: 14px 0;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            color: #333;
+            /* 原白色文字改为深色 */
+            background: #EDF3FE;
+            /* 原 #1A1A1A */
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-sans);
+        }
+        .entry-card .btn-enter:hover {
+            background: #D6E4FD;
+            /* 稍深的浅蓝悬停 */
+            box-shadow: var(--shadow-sm);
+        }
+        .entry-card .btn-enter:active {
+            background: #C5D5F0;
+            transform: scale(0.98);
+        }
+        .entry-card .info-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 18px;
+            font-size: 12px;
+            color: #aaa;
+            letter-spacing: 0.2px;
+        }
+        .entry-card .info-row span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .error-msg {
+            color: #c0392b;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            text-align: left;
+            letter-spacing: 0.2px;
+        }
+        .error-msg.show {
+            display: block;
+        }
+
+        /* ============ 考试页 ============ */
+        .exam-container {
+            display: none;
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 20px 24px 40px;
+            position: relative;
+        }
+        .exam-container.active {
+            display: block;
+        }
+
+        /* 顶部栏 */
+        .exam-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
+            margin: 0 -24px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+        .exam-topbar .student-name-display {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            letter-spacing: 0.2px;
+        }
+        .exam-topbar .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            background: #f9f9f9;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1.5px solid #e5e5e5;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+        .exam-topbar .timer-box.warning {
+            color: #e67e22;
+            border-color: #f0c78e;
+            background: #fffaf5;
+            animation: pulse-warning 1s ease-in-out infinite;
+        }
+        .exam-topbar .timer-box.danger {
+            color: #c0392b;
+            border-color: #f5c6cb;
+            background: #fff5f5;
+            animation: pulse-danger 0.6s ease-in-out infinite;
+        }
+        @keyframes pulse-warning {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(230, 126, 34, 0);
+            }
+        }
+        @keyframes pulse-danger {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.25);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(192, 57, 43, 0);
+            }
+        }
+        .timer-icon {
+            font-size: 16px;
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px 28px;
+            margin-bottom: 16px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        .question-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .question-card .q-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .question-card .q-number {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #EDF3FE;
+            /* 原 #1A1A1A */
+            color: #333;
+            /* 文字改为深色 */
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0;
+        }
+        .question-card .q-category {
+            font-size: 11px;
+            font-weight: 600;
+            color: #888;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-left: auto;
+            background: #f5f5f5;
+            padding: 4px 10px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+        .question-card .q-text {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            /* 原 #1A1A1A */
+            letter-spacing: 0.2px;
+            line-height: 1.8;
+        }
+        .question-card .q-image-area {
+            margin: 14px 0;
+            border: 2px dashed #e0e0e0;
+            border-radius: var(--radius);
+            background: #fafafa;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #bbb;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .question-card .q-image-area svg {
+            display: block;
+        }
+        .question-card .q-image-area .img-placeholder-text {
+            position: absolute;
+            pointer-events: none;
+            color: #ccc;
+            font-size: 12px;
+            letter-spacing: 0.4px;
+        }
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .options-list li {
+            position: relative;
+        }
+        .options-list input[type="radio"] {
+            display: none;
+        }
+        .options-list label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 16px;
+            border: 1.5px solid #e8e8e8;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            background: #fdfdfd;
+            user-select: none;
+        }
+        .options-list label:hover {
+            background: #f7f7f7;
+            border-color: #ccc;
+        }
+        .options-list input[type="radio"]:checked+label {
+            background: #EDF3FE;
+            /* 原 #1A1A1A */
+            color: #333;
+            /* 文字改为深色 */
+            border-color: #EDF3FE;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+        }
+        .options-list .option-letter {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1.5px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            transition: var(--transition);
+            background: #fff;
+            color: #555;
+        }
+        .options-list input[type="radio"]:checked+label .option-letter {
+            background: #fff;
+            color: #333;
+            /* 原 #1A1A1A */
+            border-color: #fff;
+        }
+
+        /* scratch积木模拟 */
+        .scratch-block-sim {
+            background: #fefefe;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-family: var(--font-sans);
+            font-size: 13px;
+            letter-spacing: 0.3px;
+            color: #333;
+            margin: 8px 0;
+            display: inline-block;
+            line-height: 1.6;
+        }
+        .scratch-block-sim .indent {
+            margin-left: 16px;
+            display: block;
+        }
+
+        /* 提交按钮 */
+        .submit-area {
+            text-align: center;
+            margin-top: 28px;
+            padding-bottom: 20px;
+        }
+        .btn-submit {
+            display: inline-block;
+            padding: 14px 52px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #333;
+            /* 原白色文字 */
+            background: #EDF3FE;
+            /* 原 #1A1A1A */
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-sans);
+        }
+        .btn-submit:hover {
+            background: #D6E4FD;
+            box-shadow: var(--shadow-md);
+        }
+        .btn-submit:active {
+            background: #C5D5F0;
+            transform: scale(0.97);
+        }
+        .btn-submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* ============ 结果页 ============ */
+        .result-container {
+            display: none;
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 20px 24px 60px;
+        }
+        .result-container.active {
+            display: block;
+        }
+        .result-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        .result-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            margin-bottom: 6px;
+            color: #333;
+            /* 原 #1A1A1A */
+        }
+        .result-card .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            color: #333;
+            /* 原 #1A1A1A */
+            margin: 22px 0 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #EDF3FE;
+            /* 原 #1A1A1A */
+            display: inline-block;
+        }
+        .result-score {
+            font-size: 56px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            color: #333;
+            /* 原 #1A1A1A */
+            text-align: center;
+            margin: 16px 0;
+        }
+        .result-score .score-denom {
+            font-size: 22px;
+            font-weight: 400;
+            color: #999;
+            letter-spacing: 0;
+        }
+        .student-name-result {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+        }
+        .wrong-item {
+            background: #fefefe;
+            border: 1px solid #eee;
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            letter-spacing: 0.2px;
+            border-left: 3px solid #c0392b;
+        }
+        .wrong-item .wrong-q {
+            font-weight: 600;
+            color: #333;
+        }
+        .wrong-item .correct-ans {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        .wrong-item .your-ans {
+            color: #c0392b;
+            font-weight: 500;
+        }
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 12px;
+        }
+        @media (max-width: 600px) {
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .analysis-box {
+            background: #fafafa;
+            border-radius: var(--radius);
+            padding: 16px 18px;
+            border: 1px solid #eee;
+        }
+        .analysis-box h4 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .analysis-box ul {
+            list-style: none;
+            font-size: 13px;
+            color: #555;
+            letter-spacing: 0.2px;
+            line-height: 1.8;
+        }
+        .analysis-box ul li::before {
+            content: '• ';
+            color: #333;
+            /* 原 #1A1A1A */
+            font-weight: 700;
+        }
+        .conclusion-box {
+            background: #EDF3FE;
+            /* 原 #1A1A1A 背景 */
+            color: #333;
+            /* 原白色文字改为深色 */
+            border-radius: var(--radius-lg);
+            padding: 24px 28px;
+            margin-top: 16px;
+            letter-spacing: 0.3px;
+        }
+        .conclusion-box h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 0.4px;
+            color: #333;
+        }
+        .conclusion-box p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #555;
+        }
+        .conclusion-box .highlight-course {
+            display: inline-block;
+            background: #fff;
+            color: #333;
+            /* 原 #1A1A1A */
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+            border: 1px solid #C5D5F0;
+        }
+        .module-score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 13px;
+            letter-spacing: 0.2px;
+        }
+        .module-score-table th,
+        .module-score-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+        .module-score-table th {
+            font-weight: 700;
+            color: #555;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            background: #fafafa;
+        }
+        .module-score-table .score-cell {
+            font-weight: 700;
+            font-family: var(--font-mono);
+            letter-spacing: 0.5px;
+        }
+        .bar-bg {
+            background: #eee;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            min-width: 60px;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        .bar-fill.high {
+            background: #27ae60;
+        }
+        .bar-fill.mid {
+            background: #e67e22;
+        }
+        .bar-fill.low {
+            background: #c0392b;
+        }
+        .no-wrong {
+            text-align: center;
+            color: #27ae60;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        /* 重新测试按钮 */
+        .retest-btn {
+            background: #fff;
+            color: #333;
+            border: 2px solid #EDF3FE;
+        }
+        .retest-btn:hover {
+            background: #EDF3FE;
+            color: #333;
+        }
+
+        /* 响应式 */
+        @media (max-width: 640px) {
+            .entry-card {
+                padding: 32px 20px 28px;
+            }
+            .entry-card h1 {
+                font-size: 19px;
+            }
+            .exam-container {
+                padding: 10px 10px 30px;
+            }
+            .exam-topbar {
+                margin: 0 -10px 20px;
+                padding: 10px 14px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .exam-topbar .timer-box {
+                font-size: 15px;
+                padding: 6px 12px;
+            }
+            .question-card {
+                padding: 16px 14px;
+                border-radius: var(--radius);
+            }
+            .question-card .q-text {
+                font-size: 14px;
+            }
+            .options-list label {
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+            .result-score {
+                font-size: 40px;
+            }
+            .btn-submit {
+                padding: 12px 32px;
+                font-size: 14px;
+            }
+        }
+		
+		.entry-card .logo-icon {
+			width: 100%;   /* 可根据需要调整 */
+			height: 80px;
+			background: transparent; /* 去掉原背景色 #EDF3FE */
+			border-radius: 14px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden; /* 保证圆角裁切 */
+			margin: 0 auto 20px;
+		}
+
+    </style>
+</head>
+<body>
+
+    <!-- ==================== 入口页 ==================== -->
+    <div class="entry-container" id="entryPage">
+        <div class="entry-card">
+            <div class="logo-icon"><img src="data:image/png;base64,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" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;"></div>
+            <h1>少儿编程入学评估考试</h1>
+            <p class="subtitle">共20题 · 限时60分钟 · 满分100分</p>
+            <label for="studentNameInput">请输入学生姓名</label>
+            <input type="text" id="studentNameInput" placeholder="请输入姓名..." maxlength="30" autocomplete="off">
+            <p class="error-msg" id="nameError">⚠️ 请先输入学生姓名再进入考试</p>
+            <button class="btn-enter" id="btnEnter" onclick="startExam()">进入考试</button>
+            <div class="info-row">
+                <span>注意：进入考试前先填姓名</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 考试页 ==================== -->
+    <div class="exam-container" id="examPage">
+        <!-- 顶部栏 -->
+        <div class="exam-topbar" id="examTopbar">
+            <span class="student-name-display" id="studentNameDisplay">考生：—</span>
+            <div class="timer-box" id="timerBox">
+                <span class="timer-icon">⏱</span>
+                <span id="timerDisplay">60:00</span>
+            </div>
+        </div>
+
+        <!-- 题目列表 -->
+        <form id="examForm" autocomplete="off">
+            <!-- 第1题：电脑基础 - Ctrl+C/V -->
+            <div class="question-card" data-q="1">
+                <div class="q-header">
+                    <span class="q-number">1</span>
+                    <span class="q-category">电脑基础操作</span>
+                </div>
+                <p class="q-text">在电脑上，想将一段选中的文字<strong>"复制"</strong>之后再<strong>"粘贴"</strong>到另一个位置，应该依次按哪组快捷键？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q1" id="q1a" value="A"><label for="q1a"><span class="option-letter">A</span> Ctrl + X，然后 Ctrl + V</label></li>
+                    <li><input type="radio" name="q1" id="q1b" value="B"><label for="q1b"><span class="option-letter">B</span> Ctrl + C，然后 Ctrl + V</label></li>
+                    <li><input type="radio" name="q1" id="q1c" value="C"><label for="q1c"><span class="option-letter">C</span> Ctrl + V，然后 Ctrl + C</label></li>
+                    <li><input type="radio" name="q1" id="q1d" value="D"><label for="q1d"><span class="option-letter">D</span> Ctrl + Z，然后 Ctrl + Y</label></li>
+                </ul>
+            </div>
+
+            <!-- 第2题：电脑基础 - 中英切换 -->
+            <div class="question-card" data-q="2">
+                <div class="q-header">
+                    <span class="q-number">2</span>
+                    <span class="q-category">电脑基础操作</span>
+                </div>
+                <p class="q-text">在<strong>拼音输入法</strong>状态下，想要临时输入英文字母（例如在中文中间打一个"OK"），通常可以按哪个键来快速切换？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q2" id="q2a" value="A"><label for="q2a"><span class="option-letter">A</span> Enter（回车键）</label></li>
+                    <li><input type="radio" name="q2" id="q2b" value="B"><label for="q2b"><span class="option-letter">B</span> Backspace（退格键）</label></li>
+                    <li><input type="radio" name="q2" id="q2c" value="C"><label for="q2c"><span class="option-letter">C</span> Shift 键</label></li>
+                    <li><input type="radio" name="q2" id="q2d" value="D"><label for="q2d"><span class="option-letter">D</span> Caps Lock 键</label></li>
+                </ul>
+            </div>
+
+            <!-- 第3题：拼音打字 -->
+            <div class="question-card" data-q="3">
+                <div class="q-header">
+                    <span class="q-number">3</span>
+                    <span class="q-category">拼音打字</span>
+                </div>
+                <p class="q-text">在拼音输入法中，要打出<strong>"月亮"</strong>这个词，正确的拼音是？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q3" id="q3a" value="A"><label for="q3a"><span class="option-letter">A</span> yue liang</label></li>
+                    <li><input type="radio" name="q3" id="q3b" value="B"><label for="q3b"><span class="option-letter">B</span> yue liàng</label></li>
+                    <li><input type="radio" name="q3" id="q3c" value="C"><label for="q3c"><span class="option-letter">C</span> ye liang</label></li>
+                    <li><input type="radio" name="q3" id="q3d" value="D"><label for="q3d"><span class="option-letter">D</span> yue ling</label></li>
+                </ul>
+            </div>
+
+            <!-- 第4题：拼音打字 - 键位 -->
+            <div class="question-card" data-q="4">
+                <div class="q-header">
+                    <span class="q-number">4</span>
+                    <span class="q-category">拼音打字</span>
+                </div>
+                <p class="q-text">键盘上，字母 <strong>"G"</strong> 键的右边紧挨着的是哪个键？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q4" id="q4a" value="A"><label for="q4a"><span class="option-letter">A</span> F</label></li>
+                    <li><input type="radio" name="q4" id="q4b" value="B"><label for="q4b"><span class="option-letter">B</span> H</label></li>
+                    <li><input type="radio" name="q4" id="q4c" value="C"><label for="q4c"><span class="option-letter">C</span> J</label></li>
+                    <li><input type="radio" name="q4" id="q4d" value="D"><label for="q4d"><span class="option-letter">D</span> K</label></li>
+                </ul>
+            </div>
+
+            <!-- 第5题：拼音/文本编辑 -->
+            <div class="question-card" data-q="5">
+                <div class="q-header">
+                    <span class="q-number">5</span>
+                    <span class="q-category">拼音打字</span>
+                </div>
+                <p class="q-text">在文档里发现打错了一个字，想要删除光标<strong>后面</strong>的字，应该按哪个键？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q5" id="q5a" value="A"><label for="q5a"><span class="option-letter">A</span> Backspace（退格键）</label></li>
+                    <li><input type="radio" name="q5" id="q5b" value="B"><label for="q5b"><span class="option-letter">B</span> Delete（删除键）</label></li>
+                    <li><input type="radio" name="q5" id="q5c" value="C"><label for="q5c"><span class="option-letter">C</span> Enter（回车键）</label></li>
+                    <li><input type="radio" name="q5" id="q5d" value="D"><label for="q5d"><span class="option-letter">D</span> 空格键</label></li>
+                </ul>
+            </div>
+
+            <!-- 第6题：逻辑思维 - 数列 -->
+            <div class="question-card" data-q="6">
+                <div class="q-header">
+                    <span class="q-number">6</span>
+                    <span class="q-category">逻辑思维</span>
+                </div>
+                <p class="q-text">观察数列：2，4，8，16，（ ？），括号中应该填什么？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q6" id="q6a" value="A"><label for="q6a"><span class="option-letter">A</span> 18</label></li>
+                    <li><input type="radio" name="q6" id="q6b" value="B"><label for="q6b"><span class="option-letter">B</span> 24</label></li>
+                    <li><input type="radio" name="q6" id="q6c" value="C"><label for="q6c"><span class="option-letter">C</span> 32</label></li>
+                    <li><input type="radio" name="q6" id="q6d" value="D"><label for="q6d"><span class="option-letter">D</span> 64</label></li>
+                </ul>
+            </div>
+
+            <!-- 第7题：图形规律 -->
+            <div class="question-card" data-q="7">
+                <div class="q-header">
+                    <span class="q-number">7</span>
+                    <span class="q-category">逻辑思维</span>
+                </div>
+                <p class="q-text">图形排列规律：○ △ □ ○ △ □ ○ △ ？ 下一个图形是什么？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q7" id="q7a" value="A"><label for="q7a"><span class="option-letter">A</span> ○</label></li>
+                    <li><input type="radio" name="q7" id="q7b" value="B"><label for="q7b"><span class="option-letter">B</span> △</label></li>
+                    <li><input type="radio" name="q7" id="q7c" value="C"><label for="q7c"><span class="option-letter">C</span> □</label></li>
+                    <li><input type="radio" name="q7" id="q7d" value="D"><label for="q7d"><span class="option-letter">D</span> ☆</label></li>
+                </ul>
+            </div>
+
+            <!-- 第8题：轻重推理 -->
+            <div class="question-card" data-q="8">
+                <div class="q-header">
+                    <span class="q-number">8</span>
+                    <span class="q-category">逻辑推理</span>
+                </div>
+                <p class="q-text">甲、乙、丙、丁四个小朋友比体重。已知：<strong>甲比乙重，乙比丙轻，丙比丁重，丁比甲轻。</strong>谁是最轻的？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q8" id="q8a" value="A"><label for="q8a"><span class="option-letter">A</span> 甲</label></li>
+                    <li><input type="radio" name="q8" id="q8b" value="B"><label for="q8b"><span class="option-letter">B</span> 乙</label></li>
+                    <li><input type="radio" name="q8" id="q8c" value="C"><label for="q8c"><span class="option-letter">C</span> 丙</label></li>
+                    <li><input type="radio" name="q8" id="q8d" value="D"><label for="q8d"><span class="option-letter">D</span> 丁</label></li>
+                </ul>
+            </div>
+
+            <!-- 第9题：方向旋转 - 有图片 -->
+            <div class="question-card" data-q="9">
+                <div class="q-header">
+                    <span class="q-number">9</span>
+                    <span class="q-category">空间方向</span>
+                </div>
+                <p class="q-text">一个小人最开始面向<strong>北</strong>。执行命令："右转90°，前进5步，左转180°，前进5步。" 现在小人面向哪个方向？</p>
+                <!-- 方向示意图 (SVG颜色保留深色以保证图示清晰，未替换为 #EDF3FE) -->
+                <div class="q-image-area" style="min-height:130px;">
+                    <svg width="180" height="140" viewBox="0 0 180 140" xmlns="http://www.w3.org/2000/svg">
+                        <text x="90" y="16" text-anchor="middle" font-size="13" fill="#333" font-weight="700">北 ↑</text>
+                        <text x="160" y="72" text-anchor="middle" font-size="11" fill="#888">东 →</text>
+                        <text x="90" y="132" text-anchor="middle" font-size="11" fill="#888">南 ↓</text>
+                        <text x="14" y="72" text-anchor="middle" font-size="11" fill="#888">← 西</text>
+                        <circle cx="90" cy="68" r="36" fill="none" stroke="#ddd" stroke-width="1.5"/>
+                        <circle cx="90" cy="68" r="3" fill="#333"/>
+                        <line x1="90" y1="68" x2="90" y2="32" stroke="#333" stroke-width="2.5" marker-end="url(#arrowNorth)"/>
+                        <defs><marker id="arrowNorth" markerWidth="8" markerHeight="8" refX="0" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#333"/></marker></defs>
+                        <text x="90" y="22" text-anchor="middle" font-size="10" fill="#c0392b" font-weight="700">初始面向</text>
+                    </svg>
+                    <span style="position:absolute; bottom:4px; right:10px; font-size:10px; color:#ccc;">*方向示意图</span>
+                </div>
+                <ul class="options-list">
+                    <li><input type="radio" name="q9" id="q9a" value="A"><label for="q9a"><span class="option-letter">A</span> 北</label></li>
+                    <li><input type="radio" name="q9" id="q9b" value="B"><label for="q9b"><span class="option-letter">B</span> 东</label></li>
+                    <li><input type="radio" name="q9" id="q9c" value="C"><label for="q9c"><span class="option-letter">C</span> 南</label></li>
+                    <li><input type="radio" name="q9" id="q9d" value="D"><label for="q9d"><span class="option-letter">D</span> 西</label></li>
+                </ul>
+            </div>
+
+            <!-- 第10题：变量计算 -->
+            <div class="question-card" data-q="10">
+                <div class="q-header">
+                    <span class="q-number">10</span>
+                    <span class="q-category">变量运算</span>
+                </div>
+                <p class="q-text">按步骤执行：<br>让 a = 5<br>让 b = a + 3<br>让 a = b - 2<br><strong>请问最后 a 的值是多少？</strong></p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q10" id="q10a" value="A"><label for="q10a"><span class="option-letter">A</span> 5</label></li>
+                    <li><input type="radio" name="q10" id="q10b" value="B"><label for="q10b"><span class="option-letter">B</span> 6</label></li>
+                    <li><input type="radio" name="q10" id="q10c" value="C"><label for="q10c"><span class="option-letter">C</span> 8</label></li>
+                    <li><input type="radio" name="q10" id="q10d" value="D"><label for="q10d"><span class="option-letter">D</span> 10</label></li>
+                </ul>
+            </div>
+
+            <!-- 第11题：数字密码 -->
+            <div class="question-card" data-q="11">
+                <div class="q-header">
+                    <span class="q-number">11</span>
+                    <span class="q-category">逻辑计算</span>
+                </div>
+                <p class="q-text">一个密码是三位数：第一位是3，第二位比第一位大2，第三位比第二位小3。这个密码是多少？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q11" id="q11a" value="A"><label for="q11a"><span class="option-letter">A</span> 352</label></li>
+                    <li><input type="radio" name="q11" id="q11b" value="B"><label for="q11b"><span class="option-letter">B</span> 351</label></li>
+                    <li><input type="radio" name="q11" id="q11c" value="C"><label for="q11c"><span class="option-letter">C</span> 362</label></li>
+                    <li><input type="radio" name="q11" id="q11d" value="D"><label for="q11d"><span class="option-letter">D</span> 341</label></li>
+                </ul>
+            </div>
+
+            <!-- 第12题：空间镜像 - 有图片 -->
+            <div class="question-card" data-q="12">
+                <div class="q-header">
+                    <span class="q-number">12</span>
+                    <span class="q-category">空间镜像</span>
+                </div>
+                <p class="q-text">在镜子中看小写字母 <strong>"p"</strong>，它在镜子里的样子最像下面哪个字母？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q12" id="q12a" value="A"><label for="q12a"><span class="option-letter">A</span> p</label></li>
+                    <li><input type="radio" name="q12" id="q12b" value="B"><label for="q12b"><span class="option-letter">B</span> q</label></li>
+                    <li><input type="radio" name="q12" id="q12c" value="C"><label for="q12c"><span class="option-letter">C</span> b</label></li>
+                    <li><input type="radio" name="q12" id="q12d" value="D"><label for="q12d"><span class="option-letter">D</span> d</label></li>
+                </ul>
+            </div>
+
+            <!-- 第13题：逻辑三段论 -->
+            <div class="question-card" data-q="13">
+                <div class="q-header">
+                    <span class="q-number">13</span>
+                    <span class="q-category">演绎推理</span>
+                </div>
+                <p class="q-text">已知："所有香蕉都是甜的。" "这是一个香蕉。" 下面哪句话<strong>一定正确</strong>？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q13" id="q13a" value="A"><label for="q13a"><span class="option-letter">A</span> 这个东西不甜</label></li>
+                    <li><input type="radio" name="q13" id="q13b" value="B"><label for="q13b"><span class="option-letter">B</span> 这个东西是甜的</label></li>
+                    <li><input type="radio" name="q13" id="q13c" value="C"><label for="q13c"><span class="option-letter">C</span> 这个东西可能甜</label></li>
+                    <li><input type="radio" name="q13" id="q13d" value="D"><label for="q13d"><span class="option-letter">D</span> 无法判断</label></li>
+                </ul>
+            </div>
+
+            <!-- 第14题：条件判断 -->
+            <div class="question-card" data-q="14">
+                <div class="q-header">
+                    <span class="q-number">14</span>
+                    <span class="q-category">条件判断</span>
+                </div>
+                <p class="q-text">流程规则：输入一个数字，如果这个数字<strong>大于10</strong>，就输出"大"；否则输出"小"。小明输入了数字 <strong>8</strong>，会输出什么？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q14" id="q14a" value="A"><label for="q14a"><span class="option-letter">A</span> 大</label></li>
+                    <li><input type="radio" name="q14" id="q14b" value="B"><label for="q14b"><span class="option-letter">B</span> 小</label></li>
+                    <li><input type="radio" name="q14" id="q14c" value="C"><label for="q14c"><span class="option-letter">C</span> 8</label></li>
+                    <li><input type="radio" name="q14" id="q14d" value="D"><label for="q14d"><span class="option-letter">D</span> 10</label></li>
+                </ul>
+            </div>
+
+            <!-- 第15题：简单代数 -->
+            <div class="question-card" data-q="15">
+                <div class="q-header">
+                    <span class="q-number">15</span>
+                    <span class="q-category">代数抽象</span>
+                </div>
+                <p class="q-text">如果 A=1，B=2，C=A+B，那么 <strong>C+1</strong> 的值是多少？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q15" id="q15a" value="A"><label for="q15a"><span class="option-letter">A</span> 2</label></li>
+                    <li><input type="radio" name="q15" id="q15b" value="B"><label for="q15b"><span class="option-letter">B</span> 3</label></li>
+                    <li><input type="radio" name="q15" id="q15c" value="C"><label for="q15c"><span class="option-letter">C</span> 4</label></li>
+                    <li><input type="radio" name="q15" id="q15d" value="D"><label for="q15d"><span class="option-letter">D</span> 5</label></li>
+                </ul>
+            </div>
+
+            <!-- 第16题：字母规律 -->
+            <div class="question-card" data-q="16">
+                <div class="q-header">
+                    <span class="q-number">16</span>
+                    <span class="q-category">字母规律</span>
+                </div>
+                <p class="q-text">看字母序列：A, C, E, G, ( ? )，括号里应该是哪个字母？</p>
+                <ul class="options-list">
+                    <li><input type="radio" name="q16" id="q16a" value="A"><label for="q16a"><span class="option-letter">A</span> H</label></li>
+                    <li><input type="radio" name="q16" id="q16b" value="B"><label for="q16b"><span class="option-letter">B</span> I</label></li>
+                    <li><input type="radio" name="q16" id="q16c" value="C"><label for="q16c"><span class="option-letter">C</span> J</label></li>
+                    <li><input type="radio" name="q16" id="q16d" value="D"><label for="q16d"><span class="option-letter">D</span> K</label></li>
+                </ul>
+            </div>
+
+            <!-- 第17题：Scratch基础 -->
+            <div class="question-card" data-q="17">
+                <div class="q-header">
+                    <span class="q-number">17</span>
+                    <span class="q-category">Scratch 基础</span>
+                </div>
+                <p class="q-text">在 Scratch 中，点击绿旗后运行下面的积木，小猫最后会说多少？</p>
+				<div>
+					<img src="data:image/png;base64,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" alt="Logo" style="width: 50%; height: 50%; object-fit: contain;">
+				</div>
+                <ul class="options-list">
+                    <li><input type="radio" name="q17" id="q17a" value="A"><label for="q17a"><span class="option-letter">A</span> 0</label></li>
+                    <li><input type="radio" name="q17" id="q17b" value="B"><label for="q17b"><span class="option-letter">B</span> 1</label></li>
+                    <li><input type="radio" name="q17" id="q17c" value="C"><label for="q17c"><span class="option-letter">C</span> 2</label></li>
+                    <li><input type="radio" name="q17" id="q17d" value="D"><label for="q17d"><span class="option-letter">D</span> 3</label></li>
+                </ul>
+            </div>
+
+            <!-- 第18题：Scratch坐标 - 有图片 -->
+            <div class="question-card" data-q="18">
+                <div class="q-header">
+                    <span class="q-number">18</span>
+                    <span class="q-category">Scratch 基础</span>
+                </div>
+                <p class="q-text">在 Scratch 的舞台里，坐标 (0,0) 是中心点。一个角色在 <strong>(100, -50)</strong> 的位置，它处于中心的哪个方向？</p>
+                <!-- 坐标示意图 (SVG颜色保留深色以保证图示清晰) -->
+                <div class="q-image-area" style="min-height:150px;">
+                    <svg width="200" height="160" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="40" y1="80" x2="180" y2="80" stroke="#ccc" stroke-width="1"/>
+                        <line x1="100" y1="10" x2="100" y2="140" stroke="#ccc" stroke-width="1"/>
+                        <polygon points="180,80 172,76 172,84" fill="#ccc"/>
+                        <polygon points="100,10 96,18 104,18" fill="#ccc"/>
+                        <text x="182" y="84" font-size="10" fill="#888">x</text>
+                        <text x="96" y="9" font-size="10" fill="#888">y</text>
+                        <circle cx="100" cy="80" r="4" fill="#333"/>
+                        <text x="106" y="76" font-size="10" fill="#333" font-weight="600">(0,0)</text>
+                        <circle cx="150" cy="105" r="6" fill="#c0392b"/>
+                        <text x="158" y="108" font-size="11" fill="#c0392b" font-weight="700">(100, -50)</text>
+                        <text x="150" y="122" font-size="9" fill="#888">右下方</text>
+                    </svg>
+                    <span style="position:absolute; bottom:4px; right:10px; font-size:10px; color:#ccc;">坐标示意图</span>
+                </div>
+                <ul class="options-list">
+                    <li><input type="radio" name="q18" id="q18a" value="A"><label for="q18a"><span class="option-letter">A</span> 右上方</label></li>
+                    <li><input type="radio" name="q18" id="q18b" value="B"><label for="q18b"><span class="option-letter">B</span> 右下方</label></li>
+                    <li><input type="radio" name="q18" id="q18c" value="C"><label for="q18c"><span class="option-letter">C</span> 左上方</label></li>
+                    <li><input type="radio" name="q18" id="q18d" value="D"><label for="q18d"><span class="option-letter">D</span> 左下方</label></li>
+                </ul>
+            </div>
+
+            <!-- 第19题：Python基础 -->
+            <div class="question-card" data-q="19">
+                <div class="q-header">
+                    <span class="q-number">19</span>
+                    <span class="q-category">Python 基础</span>
+                </div>
+                <p class="q-text">在 Python 中运行下面这行代码，屏幕会显示什么？</p>
+                <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:6px; padding:10px 16px; font-family:var(--font-mono); font-size:14px; letter-spacing:0.5px; margin:8px 0; color:#333;">
+                    <span style="color:#c0392b;">print</span>(<span style="color:#27ae60;">10 - 2 * 3</span>)
+                </div>
+                <ul class="options-list">
+                    <li><input type="radio" name="q19" id="q19a" value="A"><label for="q19a"><span class="option-letter">A</span> 4</label></li>
+                    <li><input type="radio" name="q19" id="q19b" value="B"><label for="q19b"><span class="option-letter">B</span> 24</label></li>
+                    <li><input type="radio" name="q19" id="q19c" value="C"><label for="q19c"><span class="option-letter">C</span> 10</label></li>
+                    <li><input type="radio" name="q19" id="q19d" value="D"><label for="q19d"><span class="option-letter">D</span> 0</label></li>
+                </ul>
+            </div>
+
+            <!-- 第20题：Python变量 -->
+            <div class="question-card" data-q="20">
+                <div class="q-header">
+                    <span class="q-number">20</span>
+                    <span class="q-category">Python 基础</span>
+                </div>
+                <p class="q-text">运行下面的 Python 代码后，变量 <strong>a</strong> 的最终值是多少？</p>
+                <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:6px; padding:10px 16px; font-family:var(--font-mono); font-size:14px; letter-spacing:0.5px; margin:8px 0; color:#333;">
+                    a = <span style="color:#27ae60;">7</span><br>
+                    b = <span style="color:#27ae60;">3</span><br>
+                    a = a + b
+                </div>
+                <ul class="options-list">
+                    <li><input type="radio" name="q20" id="q20a" value="A"><label for="q20a"><span class="option-letter">A</span> 7</label></li>
+                    <li><input type="radio" name="q20" id="q20b" value="B"><label for="q20b"><span class="option-letter">B</span> 3</label></li>
+                    <li><input type="radio" name="q20" id="q20c" value="C"><label for="q20c"><span class="option-letter">C</span> 10</label></li>
+                    <li><input type="radio" name="q20" id="q20d" value="D"><label for="q20d"><span class="option-letter">D</span> 4</label></li>
+                </ul>
+            </div>
+
+            <!-- 提交按钮 -->
+            <div class="submit-area">
+                <button type="button" class="btn-submit" id="btnSubmit" onclick="submitExam(false)">📝 提交答案</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ==================== 结果页 ==================== -->
+    <div class="result-container" id="resultPage">
+        <div class="result-card" id="resultContent">
+            <!-- 动态填充 -->
+        </div>
+        <div style="text-align:center; margin-top:20px;">
+            <button class="btn-submit retest-btn" onclick="location.reload()">🔄 重新测试</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 全局变量 ====================
+        const TOTAL_TIME = 60 * 60; // 60分钟 = 3600秒
+        let timeLeft = TOTAL_TIME;
+        let timerInterval = null;
+        let examSubmitted = false;
+        let studentName = '';
+
+        // 正确答案映射
+        const correctAnswers = {
+            q1: 'B',
+            q2: 'C',
+            q3: 'A',
+            q4: 'B',
+            q5: 'B',
+            q6: 'C',
+            q7: 'C',
+            q8: 'B',
+            q9: 'D',
+            q10: 'B',
+            q11: 'A',
+            q12: 'B',
+            q13: 'B',
+            q14: 'B',
+            q15: 'C',
+            q16: 'B',
+            q17: 'D',
+            q18: 'B',
+            q19: 'A',
+            q20: 'C'
+        };
+
+        // 题目分类映射
+        const questionCategories = {
+            q1: '电脑基础操作',
+            q2: '电脑基础操作',
+            q3: '拼音打字',
+            q4: '拼音打字',
+            q5: '拼音打字',
+            q6: '逻辑思维',
+            q7: '逻辑思维',
+            q8: '逻辑推理',
+            q9: '空间方向',
+            q10: '变量运算',
+            q11: '逻辑计算',
+            q12: '空间镜像',
+            q13: '演绎推理',
+            q14: '条件判断',
+            q15: '代数抽象',
+            q16: '字母规律',
+            q17: 'Scratch基础',
+            q18: 'Scratch基础',
+            q19: 'Python基础',
+            q20: 'Python基础'
+        };
+
+        // 模块分组
+        const moduleGroups = {
+            '电脑基础操作': ['q1', 'q2'],
+            '拼音打字': ['q3', 'q4', 'q5'],
+            '逻辑思维与智力': ['q6', 'q7', 'q8', 'q9', 'q10', 'q11', 'q12', 'q13', 'q14', 'q15', 'q16'],
+            'Scratch基础': ['q17', 'q18'],
+            'Python基础': ['q19', 'q20']
+        };
+
+        // ==================== 入口页逻辑 ====================
+        function startExam() {
+            const nameInput = document.getElementById('studentNameInput');
+            const nameError = document.getElementById('nameError');
+            studentName = nameInput.value.trim();
+
+            if (!studentName) {
+                nameError.classList.add('show');
+                nameInput.focus();
+                return;
+            }
+            nameError.classList.remove('show');
+
+            // 隐藏入口页，显示考试页
+            document.getElementById('entryPage').style.display = 'none';
+            document.getElementById('examPage').classList.add('active');
+            document.getElementById('resultPage').classList.remove('active');
+            document.getElementById('studentNameDisplay').textContent = '考生：' + studentName;
+
+            // 重置状态
+            examSubmitted = false;
+            timeLeft = TOTAL_TIME;
+            document.getElementById('timerBox').classList.remove('warning', 'danger');
+            document.getElementById('timerDisplay').textContent = formatTime(timeLeft);
+            document.getElementById('btnSubmit').disabled = false;
+            document.getElementById('btnSubmit').textContent = '📝 提交答案';
+
+            // 清空所有选项
+            const allRadios = document.querySelectorAll('#examForm input[type="radio"]');
+            allRadios.forEach(r => r.checked = false);
+
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // 启动计时器
+            clearInterval(timerInterval);
+            timerInterval = setInterval(tickTimer, 1000);
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+        }
+
+        function tickTimer() {
+            if (examSubmitted) return;
+            timeLeft--;
+            document.getElementById('timerDisplay').textContent = formatTime(timeLeft);
+
+            // 警告状态：剩余5分钟
+            if (timeLeft <= 300 && timeLeft > 60) {
+                document.getElementById('timerBox').classList.add('warning');
+                document.getElementById('timerBox').classList.remove('danger');
+            }
+            // 危险状态：剩余1分钟
+            if (timeLeft <= 60) {
+                document.getElementById('timerBox').classList.remove('warning');
+                document.getElementById('timerBox').classList.add('danger');
+            }
+            // 时间到
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitExam(true);
+            }
+        }
+
+        // ==================== 提交逻辑 ====================
+        function submitExam(isAutoSubmit) {
+            if (examSubmitted) return;
+            examSubmitted = true;
+            clearInterval(timerInterval);
+            document.getElementById('btnSubmit').disabled = true;
+            document.getElementById('btnSubmit').textContent = '已提交 ✓';
+
+            if (isAutoSubmit) {
+                alert('⏰ 考试时间已到，系统已自动提交试卷。');
+            }
+
+            // 收集答案
+            const userAnswers = {};
+            let totalScore = 0;
+            const wrongQuestions = [];
+            const correctQuestionIds = [];
+
+            for (let i = 1; i <= 20; i++) {
+                const qKey = 'q' + i;
+                const selected = document.querySelector('input[name="' + qKey + '"]:checked');
+                const userAns = selected ? selected.value : null;
+                userAnswers[qKey] = userAns;
+                const correctAns = correctAnswers[qKey];
+
+                if (userAns === correctAns) {
+                    totalScore += 5;
+                    correctQuestionIds.push(qKey);
+                } else {
+                    wrongQuestions.push({
+                        qKey: qKey,
+                        qNumber: i,
+                        userAns: userAns || '（未作答）',
+                        correctAns: correctAns,
+                        category: questionCategories[qKey]
+                    });
+                }
+            }
+
+            // 计算模块得分
+            const moduleScores = {};
+            for (const [moduleName, qKeys] of Object.entries(moduleGroups)) {
+                let moduleTotal = qKeys.length * 5;
+                let moduleEarned = 0;
+                qKeys.forEach(qk => {
+                    if (userAnswers[qk] === correctAnswers[qk]) {
+                        moduleEarned += 5;
+                    }
+                });
+                moduleScores[moduleName] = {
+                    earned: moduleEarned,
+                    total: moduleTotal,
+                    percentage: Math.round((moduleEarned / moduleTotal) * 100)
+                };
+            }
+
+            // 电脑基础+拼音打字合并得分（用于分班判断）
+            const basicScore = moduleScores['电脑基础操作'].earned + moduleScores['拼音打字'].earned;
+            const basicTotal = moduleScores['电脑基础操作'].total + moduleScores['拼音打字'].total;
+            const logicScore = moduleScores['逻辑思维与智力'].earned;
+            const logicTotal = moduleScores['逻辑思维与智力'].total;
+            const pythonScore = moduleScores['Python基础'].earned;
+
+            // 分班判断
+            let recommendation = '';
+            let recommendationDetail = '';
+            const basicCondition = basicScore <= 15; // 错2题以上（总分25，错2题得15）
+            const totalLow = totalScore <= 30;
+
+            if (basicCondition || totalLow) {
+                recommendation = '电脑基础与拼音打字';
+                recommendationDetail =
+                    '孩子在电脑基本操作、键盘使用或拼音输入方面还需要更多练习。建议先参加<strong>基础电脑操作+拼音打字</strong>课程，建立鼠标、键盘使用和输入能力，为后续编程学习打好扎实的基础。';
+            } else if (basicScore > 15 && logicScore >= 20 && logicScore <= 40 && totalScore >= 35 && totalScore <= 65) {
+                recommendation = 'Scratch 图形化编程';
+                recommendationDetail =
+                    '孩子已具备基本的电脑使用能力，但抽象符号或复杂逻辑还在发展中。<strong>Scratch</strong> 不需要打字，通过拖拽积木能很好地继续锻炼思维、方向和事件概念，是现阶段的最佳选择。';
+            } else if (basicScore >= 20 && logicScore >= 45 && pythonScore >= 5 && totalScore >= 70) {
+                recommendation = 'Python 代码编程';
+                recommendationDetail =
+                    '孩子在操作、逻辑、抽象和初步代码概念上都表现得相当出色，已经具备挑战真正的代码语言的能力，可以直接进入<strong>Python 入门</strong>学习。';
+            } else {
+                // 边缘情况：综合判断
+                if (totalScore >= 65 && logicScore >= 40) {
+                    recommendation = 'Python 代码编程（建议先巩固基础）';
+                    recommendationDetail =
+                    '孩子整体表现不错，但部分基础模块还有提升空间。建议进入<strong>Python 入门</strong>课程，同时在初期适当补充英文单词和打字练习，帮助孩子快速适应代码编写。';
+                } else if (totalScore >= 30 && basicScore > 10) {
+                    recommendation = 'Scratch 图形化编程';
+                    recommendationDetail =
+                        '综合来看，孩子适合从<strong>Scratch 图形化编程</strong>开始，在制作动画和游戏中提升逻辑与操作熟练度，为未来过渡到代码编程做好准备。';
+                } else {
+                    recommendation = '电脑基础与拼音打字';
+                    recommendationDetail =
+                        '建议先从<strong>基础电脑操作+拼音打字</strong>课程开始，巩固基础后再进入编程学习，这样后续学习会更顺畅、更有信心。';
+                }
+            }
+
+            // 薄弱点和强项分析
+            const weakModules = [];
+            const strongModules = [];
+            for (const [moduleName, data] of Object.entries(moduleScores)) {
+                if (data.percentage < 60) {
+                    weakModules.push({ name: moduleName, percentage: data.percentage, earned: data.earned,
+                        total: data.total });
+                }
+                if (data.percentage >= 80 && data.total > 0) {
+                    strongModules.push({ name: moduleName, percentage: data.percentage, earned: data.earned, total: data
+                            .total });
+                }
+            }
+
+            // 生成结果HTML
+            generateResultHTML(totalScore, wrongQuestions, correctQuestionIds, moduleScores, weakModules, strongModules,
+                recommendation, recommendationDetail);
+
+            // 显示结果页
+            document.getElementById('examPage').classList.remove('active');
+            document.getElementById('resultPage').classList.add('active');
+            document.getElementById('examTopbar').style.display = 'none';
+
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function generateResultHTML(totalScore, wrongQuestions, correctQuestionIds, moduleScores, weakModules,
+        strongModules, recommendation, recommendationDetail) {
+            const container = document.getElementById('resultContent');
+            let html = '';
+
+            // 标题
+            html += '<h2>📋 考试结果</h2>';
+            html += '<p class="student-name-result">考生：<strong>' + escapeHTML(studentName) + '</strong></p>';
+
+            // 得分
+            html += '<div class="result-score">' + totalScore + ' <span class="score-denom">/ 100</span></div>';
+
+            // 错题区域
+            html += '<div class="section-title">❌ 错题答案解析</div>';
+            if (wrongQuestions.length === 0) {
+                html += '<div class="no-wrong">🎉 太棒了！全部答对，没有错题！</div>';
+            } else {
+                wrongQuestions.forEach(wq => {
+                    html += '<div class="wrong-item">';
+                    html += '<span class="wrong-q">第' + wq.qNumber + '题</span> ';
+                    html += '<span style="color:#888;">[' + wq.category + ']</span><br>';
+                    html += '你的答案：<span class="your-ans">' + escapeHTML(wq.userAns) + '</span> → ';
+                    html += '正确答案：<span class="correct-ans">' + escapeHTML(wq.correctAns) + '</span>';
+                    html += '</div>';
+                });
+            }
+
+            // 模块得分表
+            html += '<div class="section-title">📊 各模块得分明细</div>';
+            html +=
+                '<table class="module-score-table"><thead><tr><th>模块</th><th>得分</th><th>得分率</th><th>掌握程度</th></tr></thead><tbody>';
+            for (const [moduleName, data] of Object.entries(moduleScores)) {
+                let barClass = 'high';
+                if (data.percentage < 60) barClass = 'low';
+                else if (data.percentage < 80) barClass = 'mid';
+                html += '<tr>';
+                html += '<td>' + moduleName + '</td>';
+                html += '<td class="score-cell">' + data.earned + ' / ' + data.total + '</td>';
+                html += '<td>' + data.percentage + '%</td>';
+                html += '<td><div class="bar-bg"><div class="bar-fill ' + barClass + '" style="width:' + data.percentage +
+                    '%;"></div></div></td>';
+                html += '</tr>';
+            }
+            html += '</tbody></table>';
+
+            // 强项和薄弱点
+            html += '<div class="analysis-grid">';
+            // 强项
+            html += '<div class="analysis-box">';
+            html += '<h4>💪 强项分析</h4>';
+            if (strongModules.length === 0) {
+                html += '<ul><li>暂无特别突出的模块，继续加油！</li></ul>';
+            } else {
+                html += '<ul>';
+                strongModules.forEach(sm => {
+                    html += '<li><strong>' + sm.name + '</strong>：得分率 ' + sm.percentage + '%（' + sm.earned +
+                        '/' + sm.total + '分）</li>';
+                });
+                html += '</ul>';
+            }
+            html += '</div>';
+            // 薄弱点
+            html += '<div class="analysis-box">';
+            html += '<h4>🔍 薄弱点分析</h4>';
+            if (weakModules.length === 0) {
+                html += '<ul><li>各模块表现均衡，没有明显薄弱环节！</li></ul>';
+            } else {
+                html += '<ul>';
+                weakModules.forEach(wm => {
+                    html += '<li><strong>' + wm.name + '</strong>：得分率仅 ' + wm.percentage + '%（' + wm.earned +
+                        '/' + wm.total + '分），需重点加强</li>';
+                });
+                html += '</ul>';
+            }
+            html += '</div>';
+            html += '</div>';
+
+            // 结论建议 (添加问候语开头)
+            html += '<div class="conclusion-box">';
+            html += '<h3>🏫 分班结论与学习建议</h3>';
+            html += '<p><strong>您好，' + escapeHTML(studentName) + '，</strong>' + recommendationDetail + '</p>';
+            html += '<p style="margin-top:10px;">推荐课程：<span class="highlight-course">' + recommendation +
+                '</span></p>';
+            html += '</div>';
+
+            container.innerHTML = html;
+        }
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ==================== 页面初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // 入口页回车键进入
+            document.getElementById('studentNameInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    startExam();
+                }
+            });
+
+            // 初始状态：显示入口页
+            document.getElementById('entryPage').style.display = 'flex';
+            document.getElementById('examPage').classList.remove('active');
+            document.getElementById('resultPage').classList.remove('active');
+            document.getElementById('examTopbar').style.display = 'flex';
+        });
+
+        // 页面卸载前清理计时器
+        window.addEventListener('beforeunload', function() {
+            if (timerInterval) clearInterval(timerInterval);
+        });
+    </script>
+
+</body>
+</html>
